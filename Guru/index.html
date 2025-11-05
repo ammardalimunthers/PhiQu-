@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             overflow-x: hidden;
             min-height: 100vh;
             display: flex;
@@ -23,7 +23,7 @@
             margin: 0;
             padding: 0;
             opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
+            animation: fadeIn 0.8s ease-in-out forwards;
         }
 
         @keyframes fadeIn {
@@ -32,49 +32,17 @@
             }
         }
 
-        .waves {
+        .background-pattern {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-        }
-
-        .wave {
-            position: absolute;
-            width: 200%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: wave 10s infinite linear;
-        }
-
-        .wave:nth-child(1) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 0s;
-        }
-
-        .wave:nth-child(2) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 2s;
-        }
-
-        .wave:nth-child(3) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 4s;
-        }
-
-        @keyframes wave {
-            0% {
-                transform: translateX(-50%) translateY(0);
-            }
-            100% {
-                transform: translateX(-50%) translateY(-100px);
-            }
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(100, 149, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(70, 130, 180, 0.1) 0%, transparent 50%);
+            background-size: 200px 200px;
         }
 
         .container {
@@ -159,11 +127,7 @@
     </style>
 </head>
 <body>
-    <div class="waves">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
-    </div>
+    <div class="background-pattern"></div>
     <div class="container">
         <div class="logo">
             <div class="phi">Φ</div>

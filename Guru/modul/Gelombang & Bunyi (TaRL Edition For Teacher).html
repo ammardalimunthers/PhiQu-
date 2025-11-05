@@ -13,14 +13,14 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
             margin: 0;
             padding: 0;
             opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
+            animation: fadeIn 0.8s ease-in-out forwards;
         }
 
         @keyframes fadeIn {
@@ -29,49 +29,17 @@
             }
         }
 
-        .waves {
+        .background-pattern {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-        }
-
-        .wave {
-            position: absolute;
-            width: 200%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: wave 10s infinite linear;
-        }
-
-        .wave:nth-child(1) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 0s;
-        }
-
-        .wave:nth-child(2) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 2s;
-        }
-
-        .wave:nth-child(3) {
-            bottom: -50px;
-            left: -50px;
-            animation-delay: 4s;
-        }
-
-        @keyframes wave {
-            0% {
-                transform: translateX(-50%) translateY(0);
-            }
-            100% {
-                transform: translateX(-50%) translateY(-100px);
-            }
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(100, 149, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(70, 130, 180, 0.1) 0%, transparent 50%);
+            background-size: 200px 200px;
         }
 
         .header {
@@ -237,11 +205,7 @@
     </style>
 </head>
 <body>
-    <div class="waves">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
-    </div>
+    <div class="background-pattern"></div>
 
     <div class="header">
         <div class="logo">
@@ -261,12 +225,30 @@
                 <div>
                     <h3>Apa itu Gelombang?</h3>
                     <p>Gelombang adalah gangguan yang merambat dan membawa energi dari satu tempat ke tempat lain tanpa mengangkut materi.</p>
-                    <img src="https://via.placeholder.com/400x200?text=Gelombang" alt="Gelombang">
+                    <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="200" fill="#f0f8ff"/>
+                        <text x="200" y="100" text-anchor="middle" font-family="Arial" font-size="24" fill="#333">Gelombang</text>
+                        <path d="M50 100 Q100 50 150 100 T250 100 T350 100" stroke="#667eea" stroke-width="3" fill="none"/>
+                        <circle cx="50" cy="100" r="5" fill="#667eea"/>
+                        <circle cx="150" cy="100" r="5" fill="#667eea"/>
+                        <circle cx="250" cy="100" r="5" fill="#667eea"/>
+                        <circle cx="350" cy="100" r="5" fill="#667eea"/>
+                    </svg>
                 </div>
                 <div>
                     <h3>Apa itu Bunyi?</h3>
                     <p>Bunyi adalah gelombang longitudinal yang dapat didengar oleh telinga manusia, dihasilkan oleh getaran benda.</p>
-                    <img src="https://via.placeholder.com/400x200?text=Bunyi" alt="Bunyi">
+                    <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="200" fill="#f0f8ff"/>
+                        <text x="200" y="100" text-anchor="middle" font-family="Arial" font-size="24" fill="#333">Bunyi</text>
+                        <path d="M50 100 L100 80 L100 120 L150 100 L150 70 L150 130 L200 100 L200 60 L200 140 L250 100 L250 50 L250 150 L300 100" stroke="#764ba2" stroke-width="3" fill="none"/>
+                        <circle cx="50" cy="100" r="5" fill="#764ba2"/>
+                        <circle cx="100" cy="100" r="5" fill="#764ba2"/>
+                        <circle cx="150" cy="100" r="5" fill="#764ba2"/>
+                        <circle cx="200" cy="100" r="5" fill="#764ba2"/>
+                        <circle cx="250" cy="100" r="5" fill="#764ba2"/>
+                        <circle cx="300" cy="100" r="5" fill="#764ba2"/>
+                    </svg>
                 </div>
             </div>
         </div>
@@ -348,40 +330,63 @@
             teacherSection.classList.remove('show');
         });
 
-        // Wave simulation
+        // Wave simulation with FPS throttling and auto-stop
         const canvas = document.getElementById('waveCanvas');
         const ctx = canvas.getContext('2d');
         let animationId;
         let time = 0;
+        let lastTime = 0;
+        const fps = 30; // Limit to 30 FPS
+        const interval = 1000 / fps;
+        let autoStopTimeout;
 
-        function drawWave() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.strokeStyle = '#667eea';
-            ctx.lineWidth = 3;
+        function drawWave(currentTime) {
+            if (currentTime - lastTime >= interval) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 3;
 
-            for (let x = 0; x < canvas.width; x++) {
-                const y = canvas.height / 2 + Math.sin((x + time) * 0.05) * 50;
-                ctx.lineTo(x, y);
+                for (let x = 0; x < canvas.width; x++) {
+                    const y = canvas.height / 2 + Math.sin((x + time) * 0.05) * 50;
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                time += 2;
+                lastTime = currentTime;
             }
-            ctx.stroke();
-            time += 2;
             animationId = requestAnimationFrame(drawWave);
         }
 
         document.getElementById('startWave').addEventListener('click', () => {
-            if (!animationId) drawWave();
+            if (!animationId) {
+                lastTime = performance.now();
+                drawWave(performance.now());
+                // Auto-stop after 10 seconds
+                autoStopTimeout = setTimeout(() => {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }, 10000);
+            }
         });
 
         document.getElementById('stopWave').addEventListener('click', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
+            if (autoStopTimeout) {
+                clearTimeout(autoStopTimeout);
+                autoStopTimeout = null;
+            }
         });
 
-        // Code execution
+        // Code execution with limits
         document.getElementById('runCode').addEventListener('click', () => {
             const code = document.getElementById('codeInput').value;
             const output = document.getElementById('output');
+            if (code.length > 1000) {
+                output.innerHTML = '<pre style="color: red;">Error: Kode terlalu panjang. Maksimal 1000 karakter.</pre>';
+                return;
+            }
             try {
                 const result = eval(code);
                 output.innerHTML = '<pre>' + (result !== undefined ? result : 'Kode dijalankan tanpa error') + '</pre>';
