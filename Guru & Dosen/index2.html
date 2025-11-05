@@ -17,6 +17,16 @@
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
         }
 
         .waves {
@@ -198,22 +208,12 @@
     </div>
 
     <script>
-        // Daftar materi dari folder Materi/
+        // Daftar materi dari folder modul/
         const materiList = [
             {
-                title: 'Gelombang & Bunyi (TaRL Edition)',
-                description: 'Pelajari konsep gelombang dan bunyi dengan pendekatan TaRL yang interaktif.',
-                file: '../Materi/Gelombang & Bunyi (TaRL Edition).html'
-            },
-            {
-                title: '',
-                description: '',
-                file: ''
-            },
-            {
-                title: '',
-                description: '',
-                file: ''
+                title: 'Gelombang & Bunyi (TaRL Edition For Teacher)',
+                description: 'Pelajari konsep gelombang dan bunyi dengan pendekatan TaRL yang interaktif untuk guru.',
+                file: 'modul/Gelombang & Bunyi (TaRL Edition For Teacher).html'
             },
             // Tambahkan materi lainnya di sini jika ada
         ];
