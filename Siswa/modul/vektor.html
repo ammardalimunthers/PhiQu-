@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modul Digital Vektor - PhiQu™</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(100, 149, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(70, 130, 180, 0.1) 0%, transparent 50%);
+            background-size: 200px 200px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            display: inline-block;
+        }
+
+        .logo .phi {
+            font-size: 40px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .logo .brand {
+            font-size: 18px;
+            color: #764ba2;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 5;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-evenly;
+            gap: 15px;
+            flex-wrap: nowrap;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .nav button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            flex: 1 1 120px;
+            max-width: 140px;
+            min-width: 110px;
+            text-transform: capitalize;
+        }
+
+        .nav button.active,
+        .nav button:hover {
+            background: #764ba2;
+        }
+
+        .section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        p, ul {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        code {
+            background-color: #f0f0f0;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #764ba2;
+        }
+
+        .output {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 40px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #222;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                justify-content: space-around;
+            }
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    <div class="header">
+        <div class="logo">
+            <div class="phi">Φ</div>
+            <div class="brand">PhiQu™</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Modul Digital: Operasi Vektor Dua Dimensi dan Tiga Dimensi</h1>
+
+        <nav class="nav" role="tablist">
+            <button role="tab" aria-selected="true" aria-controls="materi" id="tab-materi" class="active">Materi</button>
+            <button role="tab" aria-selected="false" aria-controls="modul-ajar" id="tab-modul-ajar">Modul Ajar</button>
+            <button role="tab" aria-selected="false" aria-controls="quiz" id="tab-quiz">Kuis</button>
+        </nav>
+
+        <!-- SECTION MATERI -->
+        <section id="materi" class="section active">
+            <h2>Materi Presentasi</h2>
+            <iframe id="pptxIframe" src="" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>
+            <p><a href="file/Vektor.pptx" target="_blank">Buka file PowerPoint</a></p>
+        </section>
+
+        <!-- SECTION MODUL AJAR -->
+        <section id="modul-ajar" class="section">
+            <h2>Modul Ajar</h2>
+            <iframe src="file/Modul%20Ajar%20Vektor.pdf" width="100%" height="600px" frameborder="0"></iframe>
+            <p><a href="file/Modul%20Ajar%20Vektor.pdf" target="_blank">Buka file PDF</a></p>
+        </section>
+
+        <!-- SECTION QUIZ (DIPINDAHKAN KE DALAM CONTAINER) -->
+        <section id="quiz" class="section">
+            <h2>Kuis Pemahaman</h2>
+
+            <div id="quizContainer">
+                <div id="questionContainer">
+                    <p id="questionText"></p>
+
+                    <!-- FORM HARUS DI DALAM CONTAINER -->
+                    <form id="quizForm">
+                        <div id="answersContainer"></div>
+                    </form>
+
+                    <div id="timer"></div>
+                </div>
+
+                <button id="nextButton" class="btn-primary" style="display:none; margin-top:10px;">Soal Selanjutnya</button>
+                <div id="quizResult" style="margin-top:15px;"></div>
+            </div>
+        </section>
+    </div>
+
+<script>
+/* ===============================
+   DATA SOAL
+================================*/
+
+const quizQuestions = [
+    { question: "1. Apa hasil dari operasi vektor (3,4) + (1,2)?",
+      answers: [
+          { text: "(4,6)", correct: true },
+          { text: "(3,6)", correct: false },
+          { text: "(4,7)", correct: false },
+          { text: "(2,2)", correct: false }
+      ]
+    },
+    { question: "2. Dot product dari vektor (2,3) dan (4,5) adalah?",
+      answers: [
+          { text: "23", correct: false },
+          { text: "8", correct: false },
+          { text: "14", correct: true },
+          { text: "26", correct: false }
+      ]
+    },
+    { question: "3. Vektor satuan memiliki besar?",
+      answers: [
+          { text: "1", correct: true },
+          { text: "0", correct: false },
+          { text: "2", correct: false },
+          { text: "Tak terhingga", correct: false }
+      ]
+    },
+    { question: "4. Cross product dari vektor (1,0,0) dan (0,1,0) adalah?",
+      answers: [
+          { text: "(0,0,1)", correct: true },
+          { text: "(1,0,0)", correct: false },
+          { text: "(0,1,0)", correct: false },
+          { text: "(0,0,0)", correct: false }
+      ]
+    },
+    { question: "5. Dalam 3D, vektor (a,b,c) memiliki komponen?",
+      answers: [
+          { text: "3 komponen", correct: true },
+          { text: "2 komponen", correct: false },
+          { text: "1 komponen", correct: false },
+          { text: "4 komponen", correct: false }
+      ]
+    }
+];
+
+/* ===============================
+   ELEMENT HTML
+================================*/
+
+const quizForm = document.getElementById("quizForm");
+const questionText = document.getElementById("questionText");
+const answersContainer = document.getElementById("answersContainer");
+const nextButton = document.getElementById("nextButton");
+const quizResult = document.getElementById("quizResult");
+
+let currentQuestionIndex = 0;
+let score = 0;
+let timerId;
+let timeLeft = 40;      // ⬅ Waktu per soal = 40 detik
+let usedTime = 0;
+let times = [];         // menyimpan waktu tiap soal
+let bonuses = [];       // menyimpan bonus tiap soal
+
+/* ===============================
+   TIMER
+================================*/
+
+function startTimer() {
+    timeLeft = 40;
+    document.getElementById('timer').textContent =
+        "Waktu tersisa: " + timeLeft + " detik";
+
+    timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent =
+            "Waktu tersisa: " + timeLeft + " detik";
+
+        if (timeLeft === 0) {
+            clearInterval(timerId);
+            times.push(40);   // waktu penuh
+            bonuses.push(0);  // tidak ada bonus
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+/* ===============================
+   TAMPIL SOAL
+================================*/
+
+function showQuestion(index) {
+    if (index >= quizQuestions.length) {
+        showResult();
+        return;
+    }
+
+    currentQuestionIndex = index;
+    const q = quizQuestions[index];
+
+    questionText.textContent = q.question;
+    answersContainer.innerHTML = "";
+    quizForm.reset();
+    nextButton.style.display = "none";
+    quizResult.textContent = "";
+
+    q.answers.forEach(ans => {
+        const label = document.createElement("label");
+        label.style.display = "block";
+        label.innerHTML = `
+            <input type="radio" name="answer" value="${ans.correct}">
+            ${ans.text}
+        `;
+        answersContainer.appendChild(label);
+    });
+
+    startTimer();
+}
+
+/* ===============================
+   SAAT SISWA MEMILIH JAWABAN
+================================*/
+
+quizForm.addEventListener("change", () => {
+    clearInterval(timerId);
+
+    usedTime = 40 - timeLeft;
+    times.push(usedTime);
+
+    const selected = quizForm.elements["answer"].value;
+
+    /* SKOR DASAR */
+    let questionScore = selected === "true" ? 20 : 0;
+
+    /* BONUS PADA FITUR KETEPATAN WAKTU */
+    let bonus = 0;
+
+    if (usedTime <= 10) bonus = 3;
+    else if (usedTime <= 20) bonus = 2;
+    else if (usedTime <= 30) bonus = 1;
+    else bonus = 0;
+
+    bonuses.push(bonus);
+
+    score += questionScore + bonus;
+
+    nextButton.style.display = "block";
+});
+
+/* ===============================
+   SOAL BERIKUTNYA
+================================*/
+
+nextButton.addEventListener("click", () => {
+    nextQuestion();
+});
+
+function nextQuestion() {
+    showQuestion(currentQuestionIndex + 1);
+}
+
+/* ===============================
+   HASIL AKHIR
+================================*/
+
+function showResult() {
+
+    let group = "";
+    if (score <= 50) group = "Kelompok 1";
+    else if (score <= 75) group = "Kelompok 2";
+    else group = "Kelompok 3";
+
+    let timeSummary = "";
+    for (let i = 0; i < times.length; i++) {
+        timeSummary +=
+            `Soal ${i+1}: ${times[i]} detik (Bonus: ${bonuses[i]} poin)\n`;
+    }
+
+    quizResult.innerHTML =
+        `Nilai Anda: ${score}/100 — Kelompok: ${group}<br><pre>${timeSummary}</pre>`;
+
+    nextButton.style.display = "none";
+    questionText.textContent = "";
+    answersContainer.innerHTML = "";
+    document.getElementById('timer').textContent = "";
+}
+
+/* ===============================
+   TAB CONTROL
+================================*/
+
+const tabs = document.querySelectorAll('.nav button');
+const sections = document.querySelectorAll('.section');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        const target = tab.getAttribute("aria-controls");
+        sections.forEach(section => {
+            section.classList.toggle("active", section.id === target);
+        });
+
+        if (target === "quiz") {
+            currentQuestionIndex = 0;
+            score = 0;
+            times = [];
+            bonuses = [];
+            showQuestion(0);
+        }
+    });
+});
+</script>
+</body>
+</html>
