@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LKPD Digital (Mode Kelompok) - Vektor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+  /* Modern & attractive styling */
+  :root{
+    --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    --accent: #4f46e5;
+    --accent-hover: #3730a3;
+    --muted: #6b7280;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    --border-radius: 12px;
+  }
+  body{
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 20px;
+    background: var(--bg);
+    color: #1f2937;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .wrap{max-width:950px;margin:0 auto}
+  .card{
+    background: var(--card);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover{transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0,0,0,0.15);}
+  h1,h2{margin:0 0 16px; color: #1e40af; font-weight: 700;}
+  h1{font-size: 2.2em; background: linear-gradient(45deg, #4f46e5, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;}
+  h2{font-size: 1.6em; color: #3730a3;}
+  label{display:block;font-weight:600;margin:10px 0 8px;color:var(--muted); font-size: 14px;}
+  input[type="text"],input[type="date"],input[type="number"],select,textarea{
+    width:100%;
+    padding:12px;
+    border:2px solid #e5e7eb;
+    border-radius:8px;
+    font-size:16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  input:focus, select:focus, textarea:focus{outline:none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);}
+  textarea{min-height:100px; resize: vertical;}
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .col{flex:1 1 0}
+  button{
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color:#fff;
+    border:0;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  button:before{content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;}
+  button:hover{transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);}
+  button:hover:before{left:100%;}
+  button.secondary{background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);}
+  button.secondary:hover{box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px; justify-content: center;}
+  canvas{
+    width:100%;
+    height:350px;
+    border-radius: var(--border-radius);
+    border:2px solid #dbe6fb;
+    background: linear-gradient(45deg, #f8fafc 0%, #e2e8f0 100%);
+    display:block;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .meta{font-size:14px;color:var(--muted);margin-top:8px; font-style: italic;}
+  .small{font-size:14px;color:var(--muted)}
+  .answers{margin-top:12px}
+  .qblock{
+    padding:16px;
+    border-radius: var(--border-radius);
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    margin:12px 0;
+    border-left: 5px solid var(--warning);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+  }
+  .score-badge{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:20px;
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    color:#fff;
+    font-weight:700;
+    font-size:14px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  }
+  a.file-link{
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+  a.file-link:hover{color: var(--accent-hover); text-decoration: underline;}
+  .icon{margin-right:8px; font-size:18px;}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body { padding: 8px; }
+  .wrap { max-width: 100%; margin: 0; }
+  .card { padding: 12px; margin-bottom: 10px; }
+  h1 { font-size: 1.5em; }
+  h2 { font-size: 1.3em; }
+  .row { gap: 8px; }
+  .col { flex: 1 1 100%; }
+  button { padding: 8px 10px; font-size: 14px; }
+  .controls { gap: 8px; flex-direction: column; }
+  canvas { height: 250px; }
+  .qblock { padding: 8px; }
+  .score-badge { padding: 4px 6px; font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  body { padding: 4px; font-size: 14px; }
+  .card { padding: 8px; border-radius: 6px; }
+  h1 { font-size: 1.4em; }
+  h2 { font-size: 1.2em; }
+  label { margin: 4px 0 4px; font-size: 13px; }
+  input[type="text"], input[type="date"], input[type="number"], select, textarea { padding: 6px; font-size: 14px; }
+  button { padding: 6px 8px; font-size: 13px; border-radius: 6px; }
+  canvas { height: 200px; }
+  .meta, .small { font-size: 12px; }
+  .qblock { padding: 6px; margin: 6px 0; }
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="card">
+      <h1>LKPD Digital – Operasi Vektor</h1>
+      <p class="small">Mode: <strong>Guru memilih kelompok</strong>. Format soal campuran (PG, isian singkat, analisis). Hasil tersimpan di browser (localStorage). PDF mencakup identitas, jawaban, percobaan, nilai rata-rata, dan komentar otomatis.</p>
+      <p class="meta">Presentasi (file sumber): <a class="file-link" href="/mnt/data/Vektor.pptx" target="_blank">/mnt/data/Vektor.pptx</a></p>
+    </div>
+
+    <!-- IDENTITAS & PILIH KELOMPOK (oleh GURU) -->
+    <div class="card" id="panel-identitas">
+      <h2>Identitas & Pengaturan</h2>
+      <div class="row">
+        <div class="col">
+          <label>Nama Siswa</label>
+          <input id="nama" type="text" placeholder="Isi nama siswa...">
+        </div>
+        <div class="col">
+          <label>Kelas</label>
+          <input id="kelas" type="text" placeholder="Isi kelas...">
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div class="col">
+          <label>Tanggal</label>
+          <input id="tanggal" type="date">
+        </div>
+        <div class="col">
+          <label>Pilih Kelompok (oleh Guru)</label>
+          <select id="kelompokSelect">
+            <option value="">-- Pilih Kelompok --</option>
+            <option value="1">Kelompok 1 (Rendah)</option>
+            <option value="2">Kelompok 2 (Sedang)</option>
+            <option value="3">Kelompok 3 (Tinggi)</option>
+          </select>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="setKelompokBtn"><i class="fas fa-play icon"></i>Set Kelompok & Mulai LKPD</button>
+        <button id="loadSaved" class="secondary"><i class="fas fa-upload icon"></i>Muat Data Tersimpan</button>
+      </div>
+      <p class="meta">Catatan guru: pilih kelompok siswa sebelum memulai.</p>
+    </div>
+
+    <!-- LKPD UTAMA -->
+    <div class="card" id="panel-lkpd" style="display:none">
+      <h2 id="judulKelompok">LKPD - Kelompok</h2>
+
+      <!-- instruksi ringkas -->
+      <div class="qblock">
+        <strong>Instruksi Singkat:</strong>
+        <ol>
+          <li>Masukkan angka komponen vektor X, Y, Z pada bagian "Input Vektor".</li>
+          <li>Tekan <em>Simpan Percobaan</em> untuk menyimpan hasil (akan memberi nilai otomatis).</li>
+          <li>Kerjakan soal kelompok pada bagian Soal (format 2: PG + isian + analisis).</li>
+          <li>Ketika selesai, tekan <em>Download PDF</em> untuk mengunduh laporan lengkap.</li>
+        </ol>
+      </div>
+
+      <!-- INPUT VEKTOR -->
+      <h3>Input Vektor (masukkan angka)</h3>
+      <div class="row">
+        <div class="col">
+          <label>Komponen X</label>
+          <input id="inputX" type="number" value="0" step="1">
+        </div>
+        <div class="col">
+          <label>Komponen Y</label>
+          <input id="inputY" type="number" value="0" step="1">
+        </div>
+        <div class="col">
+          <label>Komponen Z</label>
+          <input id="inputZ" type="number" value="0" step="1">
+        </div>
+      </div>
+
+      <canvas id="vectorCanvas" width="800" height="320"></canvas>
+
+      <div class="controls">
+        <button id="saveTrial"><i class="fas fa-save icon"></i>Simpan Percobaan</button>
+        <button id="clearTrials" class="secondary"><i class="fas fa-trash icon"></i>Bersihkan Percobaan</button>
+      </div>
+
+      <p class="meta">Setiap penyimpanan memberi nilai otomatis (berdasarkan target kelompok) dan menyimpan gambar + data ke localStorage.</p>
+
+      <!-- SOAL KHUSUS KELAS -->
+      <h3 style="margin-top:18px">Soal Kelompok</h3>
+      <div id="soalContainer"></div>
+
+      <div style="margin-top:12px" class="controls">
+        <button id="submitSoal"><i class="fas fa-check icon"></i>Simpan Jawaban & Hitung Nilai Soal</button>
+        <button id="exportAll" class="secondary"><i class="fas fa-download icon"></i>Download LKPD (PDF)</button>
+      </div>
+
+      <div style="margin-top:12px" id="hasilInfo"></div>
+    </div>
+
+    <!-- FOOTER SIMPLE -->
+    <div class="card small" style="text-align:center">
+      <div>Versi Simple • LKPD Digital • Semua data disimpan di browser</div>
+    </div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ====== Data Soal per Kelompok (Format 2: 2 PG, 2 Isian singkat, 1 Analisis) ====== */
+/* ====== Data Soal per Kelompok (Analisis grafik vektor) ====== */
+const soalPerKelompok = {
+  1: [ // Rendah – Pemula
+    {type:'short', q:'1) Lihat grafik vektor yang telah kamu buat. Buatlah pernyataan singkat (1–2 kalimat) tentang arah vektor tersebut.'},
+    {type:'short', q:'2) Apakah vektor lebih condong ke sumbu X, Y, atau Z? Jelaskan alasannya.'},
+    {type:'short', q:'3) Tuliskan nilai komponen X, Y, dan Z dari vektor kamu (format: X,Y,Z).'},
+    {type:'short', q:'4) Bagaimana magnitudo vektor memengaruhi panjang garis pada grafik?'}
+  ],
+  2: [ // Sedang – Menengah
+    {type:'short', q:'1) Lihat grafik vektor yang kamu buat. Buatlah pernyataan analisis mengenai arah dan panjang vektor.'},
+    {type:'short', q:'2) Tentukan apakah vektor lebih dominan pada sumbu X, Y, atau Z dan jelaskan dampaknya terhadap posisi ujung vektor.'},
+    {type:'short', q:'3) Jika kita menambahkan vektor lain, bagaimana resultannya akan memengaruhi posisi ujung vektor ini? Buat prediksi singkat.'},
+    {type:'short', q:'4) Hitung magnitudo vektor kamu dan tuliskan hubungannya dengan panjang garis pada grafik.'}
+  ],
+  3: [ // Tinggi – Lanjut
+    {type:'short', q:'1) Analisis grafik vektor yang kamu buat. Buat pernyataan hasil analisis (2–3 kalimat) mengenai arah, posisi ujung, dan komponen vektor.'},
+    {type:'short', q:'2) Jelaskan bagaimana perubahan setiap komponen (X, Y, Z) akan mengubah arah vektor secara keseluruhan.'},
+    {type:'short', q:'3) Jika vektor ini mewakili gaya, sebutkan bagaimana arah dan magnitudo memengaruhi resultan gaya jika ditambahkan vektor lain.'},
+    {type:'short', q:'4) Berikan rekomendasi tentang bagaimana memperbaiki posisi vektor agar mendekati target kelompok (X, Y, Z).'}
+  ]
+};
+
+
+/* ====== Target penilaian per kelompok (digunakan untuk memberi nilai percobaan) ======
+   nilai percobaan = 100 - (error * factor), factor dapat disesuaikan per kelompok
+*/
+const kelompokTarget = {
+  1: {target:{x:3,y:2,z:0}, factor:12}, // contoh target sederhana
+  2: {target:{x:4,y:3,z:0}, factor:10},
+  3: {target:{x:5,y:4,z:1}, factor:8}
+};
+
+/* ====== STATE ====== */
+let currentKelompok = null;
+let trials = []; // daftar percobaan untuk siswa (disimpan di localStorage)
+const LS_KEY = 'lkpd_vector_results_v2';
+
+/* ====== UI elements ====== */
+const setKelompokBtn = document.getElementById('setKelompokBtn');
+const kelompokSelect = document.getElementById('kelompokSelect');
+const panelLKPD = document.getElementById('panel-lkpd');
+const judulKelompok = document.getElementById('judulKelompok');
+const soalContainer = document.getElementById('soalContainer');
+const hasilInfo = document.getElementById('hasilInfo');
+const saveTrialBtn = document.getElementById('saveTrial');
+const clearTrialsBtn = document.getElementById('clearTrials');
+const exportBtn = document.getElementById('exportAll');
+const submitSoalBtn = document.getElementById('submitSoal');
+const loadSavedBtn = document.getElementById('loadSaved');
+
+/* ====== Canvas setup ====== */
+const canvas = document.getElementById('vectorCanvas');
+const ctx = canvas.getContext('2d');
+const inputX = document.getElementById('inputX') || createInput('inputX');
+const inputY = document.getElementById('inputY') || createInput('inputY');
+const inputZ = document.getElementById('inputZ') || createInput('inputZ');
+
+function createInput(id){
+  const el = document.getElementById(id);
+  return el;
+}
+
+/* Draw function (clear, axes, vector line, start & end points) */
+function drawVector2D(x=0,y=0){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // draw axes
+  const cx = canvas.width/2, cy = canvas.height/2;
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth=1;
+  // grid lines lightly
+  for(let gx=0;gx<=canvas.width;gx+=25){
+    ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,canvas.height); ctx.stroke();
+  }
+  for(let gy=0;gy<=canvas.height;gy+=25){
+    ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(canvas.width,gy); ctx.stroke();
+  }
+  // axes
+  ctx.beginPath(); ctx.strokeStyle='#b0c4de'; ctx.lineWidth=1.5;
+  ctx.moveTo(0,cy); ctx.lineTo(canvas.width,cy); ctx.moveTo(cx,0); ctx.lineTo(cx,canvas.height); ctx.stroke();
+
+  // vector
+  const scale = 20;
+  const ex = cx + x*scale;
+  const ey = cy - y*scale;
+
+  // line
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ex,ey);
+  ctx.strokeStyle='#1a73e8'; ctx.lineWidth=4; ctx.stroke();
+
+  // arrowhead
+  const ang = Math.atan2(ey-cy,ex-cx);
+  const ah = 10;
+  ctx.beginPath();
+  ctx.moveTo(ex,ey);
+  ctx.lineTo(ex - ah*Math.cos(ang - Math.PI/6), ey - ah*Math.sin(ang - Math.PI/6));
+  ctx.lineTo(ex - ah*Math.cos(ang + Math.PI/6), ey - ah*Math.sin(ang + Math.PI/6));
+  ctx.closePath();
+  ctx.fillStyle='#1a73e8'; ctx.fill();
+
+  // start point
+  ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2); ctx.fillStyle='#ff5252'; ctx.fill();
+  // end point
+  ctx.beginPath(); ctx.arc(ex,ey,6,0,Math.PI*2); ctx.fillStyle='#1a73e8'; ctx.fill();
+
+  // labels
+  ctx.fillStyle='#333'; ctx.font='12px Arial';
+  ctx.fillText('0', cx+6, cy+14);
+  ctx.fillText('x', canvas.width - 12, cy + 14);
+  ctx.fillText('y', cx + 6, 12);
+}
+
+/* initial draw */
+drawVector2D(0,0);
+
+/* update draw on input changes */
+document.getElementById('inputX').addEventListener('input', ()=> drawVector2D(Number(inputX.value), Number(inputY.value)));
+document.getElementById('inputY').addEventListener('input', ()=> drawVector2D(Number(inputX.value), Number(inputY.value)));
+document.getElementById('inputZ').addEventListener('input', ()=> {/* z not shown in 2D */});
+
+/* ====== set kelompok by guru ====== */
+setKelompokBtn.addEventListener('click', ()=>{
+  const kg = Number(kelompokSelect.value);
+  if(!kg){ alert('Pilih kelompok terlebih dahulu.'); return; }
+  currentKelompok = kg;
+  panelLKPD.style.display = 'block';
+  judulKelompok.textContent = `LKPD - Kelompok ${kg}`;
+  loadSoalForKelompok(kg);
+  // load existing trials for this student (if any)
+  loadTrialsFromStorage();
+  refreshHasilInfo();
+});
+
+/* ====== Load soal ke container ====== */
+function loadSoalForKelompok(kg){
+  soalContainer.innerHTML = '';
+  const list = soalPerKelompok[kg];
+  list.forEach((s, idx)=>{
+    const block = document.createElement('div');
+    block.className = 'qblock';
+    const qn = document.createElement('div');
+    qn.innerHTML = `<strong>Soal ${idx+1}.</strong> ${s.q}`;
+    block.appendChild(qn);
+    const ansDiv = document.createElement('div');
+    ansDiv.className = 'answers';
+    if(s.type==='mcq'){
+      s.choices.forEach((c,i)=>{
+        const id = `q${idx}_c${i}`;
+        const label = document.createElement('label');
+        label.style.display='block';
+        label.innerHTML = `<input type="radio" name="q${idx}" value="${i}" id="${id}"> ${c}`;
+        ansDiv.appendChild(label);
+      });
+    } else if(s.type==='short'){
+      const inp = document.createElement('input');
+      inp.type='text'; inp.name=`q${idx}`; inp.placeholder='Jawaban singkat...';
+      ansDiv.appendChild(inp);
+    } else if(s.type==='essay'){
+      const ta = document.createElement('textarea');
+      ta.name=`q${idx}`; ta.placeholder='Tulis jawaban analisis singkat...';
+      ansDiv.appendChild(ta);
+    }
+    block.appendChild(ansDiv);
+    soalContainer.appendChild(block);
+  });
+}
+
+/* ====== Trials: save, load, clear ====== */
+function computeTrialScore(kg, x,y,z){
+  const cfg = kelompokTarget[kg] || kelompokTarget[2];
+  const tx = cfg.target.x, ty = cfg.target.y, tz = cfg.target.z;
+  const error = Math.abs(tx - x) + Math.abs(ty - y) + Math.abs(tz - z);
+  const raw = Math.max(0, 100 - error * cfg.factor);
+  // round
+  return Math.round(raw);
+}
+
+function saveTrial(){
+  if(!currentKelompok){ alert('Set kelompok terlebih dahulu.'); return; }
+  const x = Number(inputX.value||0), y = Number(inputY.value||0), z = Number(inputZ.value||0);
+  // draw current state then capture image
+  drawVector2D(x,y);
+  const img = canvas.toDataURL('image/png');
+  const item = {
+    kelompok: currentKelompok,
+    x,y,z,
+    image: img,
+    score: computeTrialScore(currentKelompok, x,y,z),
+    timestamp: new Date().toLocaleString()
+  };
+  const store = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  store.push(item);
+  localStorage.setItem(LS_KEY, JSON.stringify(store));
+  trials.push(item);
+  alert('Percobaan tersimpan. Nilai percobaan: ' + item.score);
+  refreshHasilInfo();
+}
+
+saveTrialBtn.addEventListener('click', saveTrial);
+
+function loadTrialsFromStorage(){
+  const store = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  // filter by current student name + kelompok? For simplicity, load all for current kelompok
+  trials = store.filter(it => it.kelompok === currentKelompok);
+  refreshHasilInfo();
+}
+
+function refreshHasilInfo(){
+  // show small rekap: jumlah percobaan & rata-rata
+  if(!currentKelompok){ hasilInfo.innerHTML=''; return; }
+  loadTrialsFromStorage(); // ensure up to date
+  if(trials.length === 0){
+    hasilInfo.innerHTML = `<p class="small">Belum ada percobaan tersimpan untuk kelompok ${currentKelompok}.</p>`;
+    return;
+  }
+  const avg = Math.round(trials.reduce((s,t)=>s+t.score,0)/trials.length);
+  const listHtml = trials.map((t,i)=>`<div class="small">#${i+1} — (${t.x},${t.y},${t.z}) score: ${t.score} — ${t.timestamp}</div>`).join('');
+  hasilInfo.innerHTML = `<div><strong>Rekap Percobaan (${trials.length})</strong> — Rata-rata: <span class="score-badge">${avg}</span></div>${listHtml}`;
+}
+
+/* clear trials for current kelompok */
+clearTrialsBtn.addEventListener('click', ()=>{
+  if(!currentKelompok){ alert('Set kelompok dulu'); return; }
+  if(!confirm('Hapus semua percobaan untuk kelompok ini?')) return;
+  let store = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  store = store.filter(it => it.kelompok !== currentKelompok);
+  localStorage.setItem(LS_KEY, JSON.stringify(store));
+  trials = [];
+  refreshHasilInfo();
+});
+
+/* loadSaved button (general) */
+loadSavedBtn.addEventListener('click', ()=>{
+  if(!currentKelompok){ alert('Set kelompok dulu'); return; }
+  loadTrialsFromStorage();
+  alert('Memuat percobaan tersimpan untuk kelompok ' + currentKelompok);
+});
+
+/* ====== Submit soal (penilaian soal) ====== */
+submitSoalBtn.addEventListener('click', ()=>{
+  if(!currentKelompok){ alert('Set kelompok dulu'); return; }
+  const list = soalPerKelompok[currentKelompok];
+  let scoreSoal = 0;
+  let maxScore = list.length * 20; // each soal 20 point (simple)
+  let answers = [];
+  list.forEach((s, idx)=>{
+    const name = `q${idx}`;
+    const el = document.getElementsByName(name);
+    let answer = '';
+    if(s.type==='mcq'){
+      for(const e of el){ if(e.checked){ answer = s.choices[Number(e.value)]; break; } }
+    } else {
+      answer = el[0].value.trim();
+    }
+    answers.push(answer);
+    if(s.type==='mcq'){
+      let chosen = null;
+      for(const e of el){ if(e.checked){ chosen = Number(e.value); break; } }
+      if(chosen === s.ans) scoreSoal += 20;
+    } else if(s.type==='short'){
+      const val = answer;
+      // simple auto-check heuristics per question
+      if(currentKelompok===1){
+        // group1 short: accept close matches by number presence
+        if(val.length>0) scoreSoal += 20;
+      } else if(currentKelompok===2){
+        // try evaluate numeric answers if possible (basic)
+        if(/^-?\d+(\.\d+)?(,\s*-?\d+(\.\d+)?)?$/.test(val)) scoreSoal += 20;
+      } else {
+        // group3 expects precise numeric or vector
+        if(val.length>0) scoreSoal += 20;
+      }
+    } else if(s.type==='essay'){
+      const val = answer;
+      if(val.length > 10) scoreSoal += 20; // simple length-based heuristic
+    }
+  });
+
+  // capture current vector graph image
+  drawVector2D(Number(inputX.value), Number(inputY.value));
+  const graphImage = canvas.toDataURL('image/png');
+
+  // store soal result to localStorage under a separate key
+  const nama = (document.getElementById('nama').value||'Unknown').trim();
+  const kelas = document.getElementById('kelas').value || '';
+  const tanggal = document.getElementById('tanggal').value || '';
+  const soalRecord = {
+    nama, kelas, tanggal, kelompok: currentKelompok,
+    scoreSoal, maxScore, answers, graphImage, timestamp: new Date().toLocaleString()
+  };
+  const storeSoal = JSON.parse(localStorage.getItem('lkpd_soal_records') || '[]');
+  storeSoal.push(soalRecord);
+  localStorage.setItem('lkpd_soal_records', JSON.stringify(storeSoal));
+
+  alert(`Jawaban tersimpan. Skor soal: ${scoreSoal}/${maxScore}`);
+});
+
+/* ====== Export PDF: includes all LKPD content, made attractive with margins 2.4 cm ====== */
+exportBtn.addEventListener('click', async ()=>{
+  if(!currentKelompok){ alert('Set kelompok dulu'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'cm', format:'a4'});
+  const margin = 2.4; // 2.4 cm margins
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const contentWidth = pageWidth - 2 * margin;
+  const nama = document.getElementById('nama').value || '---';
+  const kelas = document.getElementById('kelas').value || '---';
+  const tanggal = document.getElementById('tanggal').value || (new Date()).toLocaleDateString();
+  const xVal = Number(inputX.value || 0);
+  const yVal = Number(inputY.value || 0);
+  const zVal = Number(inputZ.value || 0);
+
+  let y = margin;
+
+  // Title Page with attractive design
+  doc.setFillColor(79, 70, 229); // blue background
+  doc.rect(0, 0, pageWidth, 3, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.text('LKPD Digital - Operasi Vektor', margin, 1.5);
+  doc.setFontSize(14);
+  doc.text('Hasil Siswa Lengkap', margin, 2.2);
+
+  y = 4;
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(12);
+  doc.text(`Nama Siswa: ${nama}`, margin, y); y+=0.6;
+  doc.text(`Kelas: ${kelas}`, margin, y); y+=0.6;
+  doc.text(`Tanggal: ${tanggal}`, margin, y); y+=0.6;
+  doc.text(`Kelompok: ${currentKelompok}`, margin, y); y+=0.6;
+  doc.text(`Referensi Materi: /mnt/data/Vektor.pptx`, margin, y); y+=1;
+
+  // Instructions Section
+  doc.setFillColor(254, 243, 199); // light yellow
+  doc.rect(margin-0.3, y-0.3, contentWidth, 2.8, 'F');
+  doc.setFontSize(14);
+  doc.setTextColor(0, 0, 0);
+  doc.text('Instruksi Singkat:', margin, y);
+  y+=0.7;
+  doc.setFontSize(11);
+  const instruksi = [
+    '1. Masukkan angka komponen vektor X, Y, Z pada bagian "Input Vektor".',
+    '2. Tekan "Simpan Percobaan" untuk menyimpan hasil (akan memberi nilai otomatis).',
+    '3. Kerjakan soal kelompok pada bagian Soal.',
+    '4. Ketika selesai, tekan "Download PDF" untuk mengunduh laporan lengkap.'
+  ];
+  instruksi.forEach(inst => {
+    doc.text(inst, margin+0.3, y);
+    y+=0.5;
+  });
+  y+=0.7;
+
+  // Vector Input Section
+  doc.setFillColor(220, 252, 231); // light green
+  doc.rect(margin-0.3, y-0.3, contentWidth, 2.1, 'F');
+  doc.setFontSize(14);
+  doc.text('Input Vektor:', margin, y);
+  y+=0.7;
+  doc.setFontSize(11);
+  doc.text(`Komponen X: ${xVal}`, margin+0.3, y); y+=0.5;
+  doc.text(`Komponen Y: ${yVal}`, margin+0.3, y); y+=0.5;
+  doc.text(`Komponen Z: ${zVal}`, margin+0.3, y); y+=0.7;
+
+  // Graph Image
+  doc.setFontSize(14);
+  doc.text('Grafik Vektor:', margin, y);
+  y+=0.7;
+  drawVector2D(xVal, yVal);
+  const graphImage = canvas.toDataURL('image/png');
+  try {
+    doc.addImage(graphImage, 'PNG', margin, y, 8.8, 6.3);
+    y += 7;
+  } catch(e){ y+=0.7; }
+
+  // Questions and Answers
+  doc.addPage();
+  y = margin;
+  doc.setFillColor(249, 250, 251); // light gray
+  doc.rect(margin-0.3, y-0.3, contentWidth, 1.8, 'F');
+  doc.setFontSize(16);
+  doc.text('Soal Kelompok dan Jawaban', margin, y);
+  y+=1;
+
+  const soalRecords = JSON.parse(localStorage.getItem('lkpd_soal_records') || '[]').filter(r=>r.kelompok===currentKelompok && r.nama===nama);
+  if(soalRecords.length){
+    const latestRecord = soalRecords[soalRecords.length - 1];
+    const list = soalPerKelompok[currentKelompok];
+    list.forEach((s, idx)=>{
+      if(y > pageHeight - margin - 3){ doc.addPage(); y=margin; } // increased buffer for wrapped text
+      doc.setFillColor(255, 255, 255);
+      doc.rect(margin-0.3, y-0.2, contentWidth, 3, 'F'); // increased height for potential wrapping
+      doc.setFontSize(12);
+      const questionText = `Soal ${idx+1}: ${s.q}`;
+      const questionLines = doc.splitTextToSize(questionText, contentWidth - 0.6);
+      questionLines.forEach(line => {
+        doc.text(line, margin, y);
+        y += 0.5;
+      });
+      doc.setFontSize(11);
+      const answer = latestRecord.answers[idx] || 'Tidak dijawab';
+      doc.text(`Jawaban: ${answer}`, margin+0.3, y);
+      y+=0.7;
+    });
+    doc.setFontSize(12);
+    doc.text(`Skor Soal: ${latestRecord.scoreSoal}/${latestRecord.maxScore}`, margin, y);
+    y+=0.7;
+  } else {
+    doc.setFontSize(11);
+    doc.text('Belum ada data soal tersimpan.', margin, y);
+    y+=0.7;
+  }
+
+  // Trials Section
+  doc.addPage();
+  y = margin;
+  doc.setFillColor(239, 246, 255); // light blue
+  doc.rect(margin-0.3, y-0.3, contentWidth, 1.8, 'F');
+  doc.setFontSize(16);
+  doc.text('Percobaan Tersimpan', margin, y);
+  y+=1;
+
+  const allStore = JSON.parse(localStorage.getItem(LS_KEY) || '[]').filter(it=>it.kelompok===currentKelompok);
+  if(allStore.length === 0){
+    doc.setFontSize(11);
+    doc.text('Belum ada percobaan tersimpan untuk kelompok ini.', margin, y);
+    y+=0.7;
+  } else {
+    const avg = Math.round(allStore.reduce((s,t)=>s+t.score,0)/allStore.length);
+    doc.setFontSize(12);
+    doc.text(`Jumlah Percobaan: ${allStore.length} — Rata-rata: ${avg}`, margin, y);
+    y+=0.7;
+
+    for(let i=0;i<allStore.length;i++){
+      const it = allStore[i];
+      if(y > pageHeight - margin - 5){ doc.addPage(); y=margin; }
+      doc.setFillColor(255, 255, 255);
+      doc.rect(margin-0.3, y-0.2, contentWidth, 4.9, 'F');
+      doc.setFontSize(11);
+      doc.text(`Percobaan ${i+1}`, margin, y);
+      y+=0.5;
+      doc.text(`Komponen: X=${it.x}, Y=${it.y}, Z=${it.z}`, margin+0.3, y);
+      y+=0.4;
+      doc.text(`Score: ${it.score}`, margin+0.3, y);
+      y+=0.4;
+      try {
+        doc.addImage(it.image, 'PNG', margin+0.3, y, 5.3, 3.5);
+        y += 3.9;
+      } catch(e){ y+=0.7; }
+    }
+
+    // Comments
+    if(y > pageHeight - margin - 2){ doc.addPage(); y=margin; }
+    doc.setFillColor(254, 243, 199);
+    doc.rect(margin-0.3, y-0.3, contentWidth, 2.1, 'F');
+    doc.setFontSize(14);
+    doc.text('Komentar Guru Otomatis:', margin, y);
+    y+=0.7;
+    let comment = '';
+    if(avg >= 85) comment = 'Pemahaman sangat baik. Terus pertahankan ketelitian dan coba tugas lebih menantang.';
+    else if(avg >=65) comment = 'Pemahaman cukup. Latih bagian yang masih kurang (perhatikan komponen tertentu).';
+    else comment = 'Perlu latihan lebih lanjut. Fokus pada hubungan komponen X, Y, Z dan visualisasinya.';
+    doc.setFontSize(11);
+    doc.text(comment, margin, y);
+    y+=0.7;
+  }
+
+  // Footer
+  doc.setFontSize(9);
+  doc.setTextColor(128, 128, 128);
+  doc.text('Dokumen di-generate oleh Muammar MD.', margin, pageHeight - 0.5);
+  doc.save(`LKPD_${nama.replace(/\s+/g,'_') || 'siswa'}.pdf`);
+});
+
+/* ====== load all trials into trials array for currentKelompok on page load (if set) ====== */
+function initIfAlreadySet(){
+  const kg = Number(kelompokSelect.value);
+  if(kg){ currentKelompok = kg; panelLKPD.style.display='block'; judulKelompok.textContent=`LKPD - Kelompok ${kg}`; loadSoalForKelompok(kg); loadTrialsFromStorage();}
+}
+initIfAlreadySet();
+
+</script>
+</body>
+</html>
