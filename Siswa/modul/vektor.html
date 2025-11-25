@@ -104,7 +104,7 @@
             background: #667eea;
             color: white;
             border: none;
-            padding: 10px 0;
+            padding: 12px 20px;
             border-radius: 7px;
             cursor: pointer;
             font-weight: 600;
@@ -189,6 +189,13 @@
         @media (max-width: 768px) {
             .nav {
                 justify-content: space-around;
+                gap: 5px;
+            }
+            .nav button {
+                padding: 8px 15px;
+                flex: 1 1 auto;
+                max-width: none;
+                min-width: 80px;
             }
             .container {
                 margin: 10px;
@@ -390,9 +397,9 @@ quizForm.addEventListener("change", () => {
     /* BONUS PADA FITUR KETEPATAN WAKTU */
     let bonus = 0;
 
-    if (usedTime <= 10) bonus = 3;
-    else if (usedTime <= 20) bonus = 2;
-    else if (usedTime <= 30) bonus = 1;
+    if (usedTime <= 5) bonus = 3;
+    else if (usedTime <= 10) bonus = 2;
+    else if (usedTime <= 15) bonus = 1;
     else bonus = 0;
 
     bonuses.push(bonus);
